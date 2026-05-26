@@ -42,7 +42,7 @@ router.post("/register", async (req: Request, res: Response) => {
   });
 
   const token = signToken({ userId: user.id, email: user.email });
-  return res.status(201).json({ token, user });
+  return res.status(201).json({ token, user: { ...user, hasResume: false } });
 });
 
 router.post("/login", async (req: Request, res: Response) => {
@@ -65,7 +65,7 @@ router.post("/login", async (req: Request, res: Response) => {
   const token = signToken({ userId: user.id, email: user.email });
   return res.status(200).json({
     token,
-    user: { id: user.id, name: user.name, email: user.email },
+    user: { id: user.id, name: user.name, email: user.email, hasResume: !!user.baseResume },
   });
 });
 
@@ -102,7 +102,7 @@ router.post("/google", async (req: Request, res: Response) => {
     const token = signToken({ userId: user.id, email: user.email });
     return res.status(200).json({
       token,
-      user: { id: user.id, name: user.name, email: user.email },
+      user: { id: user.id, name: user.name, email: user.email, hasResume: !!user.baseResume },
     });
   } catch (error) {
     console.error("Google Auth Error:", error);
