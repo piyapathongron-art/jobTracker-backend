@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String           @id @default(cuid())
+  name         String
+  email        String           @unique
+  password     String
+  baseResume   String?          @db.Text
+  homeLocation String?
+  tokenUsage   Int              @default(0)
+  createdAt    DateTime         @default(now())
+  applications JobApplication[]
+}
+
+model JobApplication {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company        String
+  role           String
+  status         Status    @default(WISHLIST)
+  url            String?
+  salaryMin      Int?
+  salaryMax      Int?
+  salaryCurrency String    @default("THB")
+  salaryPeriod   String    @default("MONTHLY")
+  location       String?
+  workMode       String    @default("ONSITE")
+  jobDescription String?   @db.Text
+  notes          String?
+  appliedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+enum Status {
+  WISHLIST
+  APPLIED
+  INTERVIEWING
+  OFFERED
+  REJECTED
+  GHOSTED
+}
