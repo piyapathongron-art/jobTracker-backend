@@ -8,7 +8,7 @@ import aiRouter from "./routes/ai.js";
 
 const app = express();
 
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN ?? "http://localhost:3000";
+const CLIENT_ORIGIN = (process.env.CLIENT_ORIGIN ?? "http://localhost:3000").replace(/\/$/, "");
 
 app.use(cors({ origin: CLIENT_ORIGIN }));
 app.use(express.json({ limit: "1mb" }));
