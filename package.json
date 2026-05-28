@@ -15,6 +15,9 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.33.3",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@prisma/adapter-pg": "^7.8.0",

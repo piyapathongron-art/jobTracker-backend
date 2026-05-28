@@ -5,6 +5,7 @@ import authRouter from "./routes/auth.js";
 import usersRouter from "./routes/users.js";
 import applicationsRouter from "./routes/applications.js";
 import aiRouter from "./routes/ai.js";
+import insightsRouter from "./routes/insights.js";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/applications", applicationsRouter);
 app.use("/api/ai", aiRouter);
+app.use("/api/insights", insightsRouter);
 
 const PORT = Number(process.env.PORT ?? 5001);
 app.listen(PORT, () => {
