@@ -8,15 +8,21 @@ datasource db {
 }
 
 model User {
-  id           String           @id @default(cuid())
-  name         String
-  email        String           @unique
-  password     String?
-  baseResume   String?          @db.Text
-  homeLocation String?
-  tokenUsage   Int              @default(0)
-  createdAt    DateTime         @default(now())
-  applications JobApplication[]
+  id                String           @id @default(cuid())
+  name              String
+  email             String           @unique
+  password          String?
+  baseResume        String?          @db.Text
+  homeLocation      String?
+  tokenUsageTotal   Int              @default(0)
+  tokenUsageWindow  Int              @default(0)
+  tokenLimit        Int              @default(50000)
+  scrapeUsageTotal  Int              @default(0)
+  scrapeUsageWindow Int              @default(0)
+  scrapeLimit       Int              @default(10)
+  nextQuotaReset    DateTime         @default(now())
+  createdAt         DateTime         @default(now())
+  applications      JobApplication[]
 }
 
 model JobApplication {

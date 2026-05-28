@@ -78,7 +78,13 @@ export const UserScalarFieldEnum = {
   password: 'password',
   baseResume: 'baseResume',
   homeLocation: 'homeLocation',
-  tokenUsage: 'tokenUsage',
+  tokenUsageTotal: 'tokenUsageTotal',
+  tokenUsageWindow: 'tokenUsageWindow',
+  tokenLimit: 'tokenLimit',
+  scrapeUsageTotal: 'scrapeUsageTotal',
+  scrapeUsageWindow: 'scrapeUsageWindow',
+  scrapeLimit: 'scrapeLimit',
+  nextQuotaReset: 'nextQuotaReset',
   createdAt: 'createdAt'
 } as const
 

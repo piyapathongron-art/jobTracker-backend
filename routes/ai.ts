@@ -10,28 +10,19 @@ import { RESUME_OPTIMIZER_PROMPT } from "../lib/prompts/resumeOptimizer.js";
 import { JOB_COMPARER_PROMPT } from "../lib/prompts/jobComparer.js";
 import { requireAuth } from "../middleware/auth.js";
 import { prisma } from "../lib/prisma.js";
+import {
+  assertTokenQuota,
+  assertScrapeQuota,
+  incrementTokenUsage,
+  incrementScrapeUsage,
+} from "../lib/quota.js";
 
 const router = Router();
 
 router.use(requireAuth);
 
-export const MAX_TOKENS = 100_000;
-
-async function assertQuota(userId: string): Promise<{ ok: true } | { ok: false; status: number; body: { error: string } }> {
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { tokenUsage: true } });
-  if (!user) return { ok: false, status: 404, body: { error: "User not found." } };
-  if (user.tokenUsage >= MAX_TOKENS) {
-    return { ok: false, status: 403, body: { error: "Token limit exceeded (100k maximum)." } };
-  }
-  return { ok: true };
-}
-
-function incrementUsage(userId: string, usage: number | undefined) {
-  if (!usage || usage <= 0) return;
-  prisma.user
-    .update({ where: { id: userId }, data: { tokenUsage: { increment: usage } } })
-    .catch((err) => console.error("Failed to increment tokenUsage:", err));
-}
+const assertQuota = assertTokenQuota;
+const incrementUsage = incrementTokenUsage;
 
 const parseSchema = z.object({
   text: z.string().trim().min(1, "Job description text is required"),
@@ -391,8 +382,10 @@ router.post("/scrape-url", async (req: Request, res: Response) => {
   }
 
   const userId = (req as any).user.userId;
-  const quota = await assertQuota(userId);
-  if (!quota.ok) return res.status(quota.status).json(quota.body);
+  const tokenQuota = await assertTokenQuota(userId);
+  if (!tokenQuota.ok) return res.status(tokenQuota.status).json(tokenQuota.body);
+  const scrapeQuota = await assertScrapeQuota(userId);
+  if (!scrapeQuota.ok) return res.status(scrapeQuota.status).json(scrapeQuota.body);
 
   const firecrawlKey = process.env.FIRECRAWL_API_KEY;
   if (!firecrawlKey) {
@@ -443,6 +436,8 @@ router.post("/scrape-url", async (req: Request, res: Response) => {
     const data = JSON.parse(jsonStr);
     data.url = parsed.data.url;
     data.source = detectSourceFromUrl(parsed.data.url);
+
+    incrementScrapeUsage(userId);
 
     return res.json(data);
   } catch (error) {

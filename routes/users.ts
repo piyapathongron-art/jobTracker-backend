@@ -5,12 +5,26 @@ import { requireAuth } from "../middleware/auth.js";
 import multer from "multer";
 import { geminiFlash } from "../lib/gemini.js";
 import { PDF_RESUME_PARSER_PROMPT } from "../lib/prompts/pdfResumeParser.js";
+import { assertTokenQuota, incrementTokenUsage, checkAndResetQuotas } from "../lib/quota.js";
 
 const router = Router();
 
 router.use(requireAuth);
 
-const MAX_TOKENS = 100_000;
+const QUOTA_SELECT = {
+  id: true,
+  name: true,
+  email: true,
+  baseResume: true,
+  homeLocation: true,
+  tokenUsageTotal: true,
+  tokenUsageWindow: true,
+  tokenLimit: true,
+  scrapeUsageTotal: true,
+  scrapeUsageWindow: true,
+  scrapeLimit: true,
+  nextQuotaReset: true,
+} as const;
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -37,11 +51,9 @@ router.put("/profile", async (req: Request, res: Response) => {
     if (parsed.data.name !== undefined) updateData.name = parsed.data.name;
     if (parsed.data.homeLocation !== undefined) updateData.homeLocation = parsed.data.homeLocation;
 
-    const user = await prisma.user.update({
-      where: { id: userId },
-      data: updateData,
-      select: { id: true, name: true, email: true, baseResume: true, homeLocation: true, tokenUsage: true },
-    });
+    await prisma.user.update({ where: { id: userId }, data: updateData });
+    await checkAndResetQuotas(userId);
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: QUOTA_SELECT });
     return res.json(user);
   } catch (error) {
     console.error("Profile Update Error:", error);
@@ -54,13 +66,12 @@ router.get("/profile", async (req: Request, res: Response) => {
   const userId = (req as any).user.userId;
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, name: true, email: true, baseResume: true, homeLocation: true, tokenUsage: true },
-    });
+    await checkAndResetQuotas(userId);
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: QUOTA_SELECT });
     if (!user) return res.status(404).json({ error: "User not found." });
     return res.json(user);
   } catch (error) {
+    console.error("Profile Fetch Error:", error);
     return res.status(500).json({ error: "Failed to fetch profile." });
   }
 });
@@ -76,11 +87,8 @@ router.post("/profile/upload-pdf", upload.single("resume"), async (req: Request,
     return res.status(400).json({ error: "Only PDF files are supported." });
   }
 
-  const quotaUser = await prisma.user.findUnique({ where: { id: userId }, select: { tokenUsage: true } });
-  if (!quotaUser) return res.status(404).json({ error: "User not found." });
-  if (quotaUser.tokenUsage >= MAX_TOKENS) {
-    return res.status(403).json({ error: "Token limit exceeded (100k maximum)." });
-  }
+  const quota = await assertTokenQuota(userId);
+  if (!quota.ok) return res.status(quota.status).json(quota.body);
 
   try {
     const base64String = req.file.buffer.toString("base64");
@@ -95,12 +103,7 @@ router.post("/profile/upload-pdf", upload.single("resume"), async (req: Request,
       },
     ]);
 
-    const usage = result.response.usageMetadata?.totalTokenCount;
-    if (usage && usage > 0) {
-      prisma.user
-        .update({ where: { id: userId }, data: { tokenUsage: { increment: usage } } })
-        .catch((err) => console.error("Failed to increment tokenUsage:", err));
-    }
+    incrementTokenUsage(userId, result.response.usageMetadata?.totalTokenCount);
 
     const markdownText = result.response.text().trim();
 

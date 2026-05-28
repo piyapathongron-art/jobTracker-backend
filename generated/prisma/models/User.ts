@@ -27,11 +27,21 @@ export type AggregateUser = {
 }
 
 export type UserAvgAggregateOutputType = {
-  tokenUsage: number | null
+  tokenUsageTotal: number | null
+  tokenUsageWindow: number | null
+  tokenLimit: number | null
+  scrapeUsageTotal: number | null
+  scrapeUsageWindow: number | null
+  scrapeLimit: number | null
 }
 
 export type UserSumAggregateOutputType = {
-  tokenUsage: number | null
+  tokenUsageTotal: number | null
+  tokenUsageWindow: number | null
+  tokenLimit: number | null
+  scrapeUsageTotal: number | null
+  scrapeUsageWindow: number | null
+  scrapeLimit: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -41,7 +51,13 @@ export type UserMinAggregateOutputType = {
   password: string | null
   baseResume: string | null
   homeLocation: string | null
-  tokenUsage: number | null
+  tokenUsageTotal: number | null
+  tokenUsageWindow: number | null
+  tokenLimit: number | null
+  scrapeUsageTotal: number | null
+  scrapeUsageWindow: number | null
+  scrapeLimit: number | null
+  nextQuotaReset: Date | null
   createdAt: Date | null
 }
 
@@ -52,7 +68,13 @@ export type UserMaxAggregateOutputType = {
   password: string | null
   baseResume: string | null
   homeLocation: string | null
-  tokenUsage: number | null
+  tokenUsageTotal: number | null
+  tokenUsageWindow: number | null
+  tokenLimit: number | null
+  scrapeUsageTotal: number | null
+  scrapeUsageWindow: number | null
+  scrapeLimit: number | null
+  nextQuotaReset: Date | null
   createdAt: Date | null
 }
 
@@ -63,18 +85,34 @@ export type UserCountAggregateOutputType = {
   password: number
   baseResume: number
   homeLocation: number
-  tokenUsage: number
+  tokenUsageTotal: number
+  tokenUsageWindow: number
+  tokenLimit: number
+  scrapeUsageTotal: number
+  scrapeUsageWindow: number
+  scrapeLimit: number
+  nextQuotaReset: number
   createdAt: number
   _all: number
 }
 
 
 export type UserAvgAggregateInputType = {
-  tokenUsage?: true
+  tokenUsageTotal?: true
+  tokenUsageWindow?: true
+  tokenLimit?: true
+  scrapeUsageTotal?: true
+  scrapeUsageWindow?: true
+  scrapeLimit?: true
 }
 
 export type UserSumAggregateInputType = {
-  tokenUsage?: true
+  tokenUsageTotal?: true
+  tokenUsageWindow?: true
+  tokenLimit?: true
+  scrapeUsageTotal?: true
+  scrapeUsageWindow?: true
+  scrapeLimit?: true
 }
 
 export type UserMinAggregateInputType = {
@@ -84,7 +122,13 @@ export type UserMinAggregateInputType = {
   password?: true
   baseResume?: true
   homeLocation?: true
-  tokenUsage?: true
+  tokenUsageTotal?: true
+  tokenUsageWindow?: true
+  tokenLimit?: true
+  scrapeUsageTotal?: true
+  scrapeUsageWindow?: true
+  scrapeLimit?: true
+  nextQuotaReset?: true
   createdAt?: true
 }
 
@@ -95,7 +139,13 @@ export type UserMaxAggregateInputType = {
   password?: true
   baseResume?: true
   homeLocation?: true
-  tokenUsage?: true
+  tokenUsageTotal?: true
+  tokenUsageWindow?: true
+  tokenLimit?: true
+  scrapeUsageTotal?: true
+  scrapeUsageWindow?: true
+  scrapeLimit?: true
+  nextQuotaReset?: true
   createdAt?: true
 }
 
@@ -106,7 +156,13 @@ export type UserCountAggregateInputType = {
   password?: true
   baseResume?: true
   homeLocation?: true
-  tokenUsage?: true
+  tokenUsageTotal?: true
+  tokenUsageWindow?: true
+  tokenLimit?: true
+  scrapeUsageTotal?: true
+  scrapeUsageWindow?: true
+  scrapeLimit?: true
+  nextQuotaReset?: true
   createdAt?: true
   _all?: true
 }
@@ -204,7 +260,13 @@ export type UserGroupByOutputType = {
   password: string | null
   baseResume: string | null
   homeLocation: string | null
-  tokenUsage: number
+  tokenUsageTotal: number
+  tokenUsageWindow: number
+  tokenLimit: number
+  scrapeUsageTotal: number
+  scrapeUsageWindow: number
+  scrapeLimit: number
+  nextQuotaReset: Date
   createdAt: Date
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
@@ -238,7 +300,13 @@ export type UserWhereInput = {
   password?: Prisma.StringNullableFilter<"User"> | string | null
   baseResume?: Prisma.StringNullableFilter<"User"> | string | null
   homeLocation?: Prisma.StringNullableFilter<"User"> | string | null
-  tokenUsage?: Prisma.IntFilter<"User"> | number
+  tokenUsageTotal?: Prisma.IntFilter<"User"> | number
+  tokenUsageWindow?: Prisma.IntFilter<"User"> | number
+  tokenLimit?: Prisma.IntFilter<"User"> | number
+  scrapeUsageTotal?: Prisma.IntFilter<"User"> | number
+  scrapeUsageWindow?: Prisma.IntFilter<"User"> | number
+  scrapeLimit?: Prisma.IntFilter<"User"> | number
+  nextQuotaReset?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   applications?: Prisma.JobApplicationListRelationFilter
 }
@@ -250,7 +318,13 @@ export type UserOrderByWithRelationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   baseResume?: Prisma.SortOrderInput | Prisma.SortOrder
   homeLocation?: Prisma.SortOrderInput | Prisma.SortOrder
-  tokenUsage?: Prisma.SortOrder
+  tokenUsageTotal?: Prisma.SortOrder
+  tokenUsageWindow?: Prisma.SortOrder
+  tokenLimit?: Prisma.SortOrder
+  scrapeUsageTotal?: Prisma.SortOrder
+  scrapeUsageWindow?: Prisma.SortOrder
+  scrapeLimit?: Prisma.SortOrder
+  nextQuotaReset?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   applications?: Prisma.JobApplicationOrderByRelationAggregateInput
 }
@@ -265,7 +339,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringNullableFilter<"User"> | string | null
   baseResume?: Prisma.StringNullableFilter<"User"> | string | null
   homeLocation?: Prisma.StringNullableFilter<"User"> | string | null
-  tokenUsage?: Prisma.IntFilter<"User"> | number
+  tokenUsageTotal?: Prisma.IntFilter<"User"> | number
+  tokenUsageWindow?: Prisma.IntFilter<"User"> | number
+  tokenLimit?: Prisma.IntFilter<"User"> | number
+  scrapeUsageTotal?: Prisma.IntFilter<"User"> | number
+  scrapeUsageWindow?: Prisma.IntFilter<"User"> | number
+  scrapeLimit?: Prisma.IntFilter<"User"> | number
+  nextQuotaReset?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   applications?: Prisma.JobApplicationListRelationFilter
 }, "id" | "email">
@@ -277,7 +357,13 @@ export type UserOrderByWithAggregationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   baseResume?: Prisma.SortOrderInput | Prisma.SortOrder
   homeLocation?: Prisma.SortOrderInput | Prisma.SortOrder
-  tokenUsage?: Prisma.SortOrder
+  tokenUsageTotal?: Prisma.SortOrder
+  tokenUsageWindow?: Prisma.SortOrder
+  tokenLimit?: Prisma.SortOrder
+  scrapeUsageTotal?: Prisma.SortOrder
+  scrapeUsageWindow?: Prisma.SortOrder
+  scrapeLimit?: Prisma.SortOrder
+  nextQuotaReset?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
@@ -296,7 +382,13 @@ export type UserScalarWhereWithAggregatesInput = {
   password?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   baseResume?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   homeLocation?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  tokenUsage?: Prisma.IntWithAggregatesFilter<"User"> | number
+  tokenUsageTotal?: Prisma.IntWithAggregatesFilter<"User"> | number
+  tokenUsageWindow?: Prisma.IntWithAggregatesFilter<"User"> | number
+  tokenLimit?: Prisma.IntWithAggregatesFilter<"User"> | number
+  scrapeUsageTotal?: Prisma.IntWithAggregatesFilter<"User"> | number
+  scrapeUsageWindow?: Prisma.IntWithAggregatesFilter<"User"> | number
+  scrapeLimit?: Prisma.IntWithAggregatesFilter<"User"> | number
+  nextQuotaReset?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
@@ -307,7 +399,13 @@ export type UserCreateInput = {
   password?: string | null
   baseResume?: string | null
   homeLocation?: string | null
-  tokenUsage?: number
+  tokenUsageTotal?: number
+  tokenUsageWindow?: number
+  tokenLimit?: number
+  scrapeUsageTotal?: number
+  scrapeUsageWindow?: number
+  scrapeLimit?: number
+  nextQuotaReset?: Date | string
   createdAt?: Date | string
   applications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
 }
@@ -319,7 +417,13 @@ export type UserUncheckedCreateInput = {
   password?: string | null
   baseResume?: string | null
   homeLocation?: string | null
-  tokenUsage?: number
+  tokenUsageTotal?: number
+  tokenUsageWindow?: number
+  tokenLimit?: number
+  scrapeUsageTotal?: number
+  scrapeUsageWindow?: number
+  scrapeLimit?: number
+  nextQuotaReset?: Date | string
   createdAt?: Date | string
   applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -331,7 +435,13 @@ export type UserUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseResume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tokenUsage?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  nextQuotaReset?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
 }
@@ -343,7 +453,13 @@ export type UserUncheckedUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseResume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tokenUsage?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  nextQuotaReset?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -355,7 +471,13 @@ export type UserCreateManyInput = {
   password?: string | null
   baseResume?: string | null
   homeLocation?: string | null
-  tokenUsage?: number
+  tokenUsageTotal?: number
+  tokenUsageWindow?: number
+  tokenLimit?: number
+  scrapeUsageTotal?: number
+  scrapeUsageWindow?: number
+  scrapeLimit?: number
+  nextQuotaReset?: Date | string
   createdAt?: Date | string
 }
 
@@ -366,7 +488,13 @@ export type UserUpdateManyMutationInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseResume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tokenUsage?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  nextQuotaReset?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -377,7 +505,13 @@ export type UserUncheckedUpdateManyInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseResume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tokenUsage?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  nextQuotaReset?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -388,12 +522,23 @@ export type UserCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   baseResume?: Prisma.SortOrder
   homeLocation?: Prisma.SortOrder
-  tokenUsage?: Prisma.SortOrder
+  tokenUsageTotal?: Prisma.SortOrder
+  tokenUsageWindow?: Prisma.SortOrder
+  tokenLimit?: Prisma.SortOrder
+  scrapeUsageTotal?: Prisma.SortOrder
+  scrapeUsageWindow?: Prisma.SortOrder
+  scrapeLimit?: Prisma.SortOrder
+  nextQuotaReset?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
-  tokenUsage?: Prisma.SortOrder
+  tokenUsageTotal?: Prisma.SortOrder
+  tokenUsageWindow?: Prisma.SortOrder
+  tokenLimit?: Prisma.SortOrder
+  scrapeUsageTotal?: Prisma.SortOrder
+  scrapeUsageWindow?: Prisma.SortOrder
+  scrapeLimit?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -403,7 +548,13 @@ export type UserMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   baseResume?: Prisma.SortOrder
   homeLocation?: Prisma.SortOrder
-  tokenUsage?: Prisma.SortOrder
+  tokenUsageTotal?: Prisma.SortOrder
+  tokenUsageWindow?: Prisma.SortOrder
+  tokenLimit?: Prisma.SortOrder
+  scrapeUsageTotal?: Prisma.SortOrder
+  scrapeUsageWindow?: Prisma.SortOrder
+  scrapeLimit?: Prisma.SortOrder
+  nextQuotaReset?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -414,12 +565,23 @@ export type UserMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   baseResume?: Prisma.SortOrder
   homeLocation?: Prisma.SortOrder
-  tokenUsage?: Prisma.SortOrder
+  tokenUsageTotal?: Prisma.SortOrder
+  tokenUsageWindow?: Prisma.SortOrder
+  tokenLimit?: Prisma.SortOrder
+  scrapeUsageTotal?: Prisma.SortOrder
+  scrapeUsageWindow?: Prisma.SortOrder
+  scrapeLimit?: Prisma.SortOrder
+  nextQuotaReset?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
-  tokenUsage?: Prisma.SortOrder
+  tokenUsageTotal?: Prisma.SortOrder
+  tokenUsageWindow?: Prisma.SortOrder
+  tokenLimit?: Prisma.SortOrder
+  scrapeUsageTotal?: Prisma.SortOrder
+  scrapeUsageWindow?: Prisma.SortOrder
+  scrapeLimit?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -468,7 +630,13 @@ export type UserCreateWithoutApplicationsInput = {
   password?: string | null
   baseResume?: string | null
   homeLocation?: string | null
-  tokenUsage?: number
+  tokenUsageTotal?: number
+  tokenUsageWindow?: number
+  tokenLimit?: number
+  scrapeUsageTotal?: number
+  scrapeUsageWindow?: number
+  scrapeLimit?: number
+  nextQuotaReset?: Date | string
   createdAt?: Date | string
 }
 
@@ -479,7 +647,13 @@ export type UserUncheckedCreateWithoutApplicationsInput = {
   password?: string | null
   baseResume?: string | null
   homeLocation?: string | null
-  tokenUsage?: number
+  tokenUsageTotal?: number
+  tokenUsageWindow?: number
+  tokenLimit?: number
+  scrapeUsageTotal?: number
+  scrapeUsageWindow?: number
+  scrapeLimit?: number
+  nextQuotaReset?: Date | string
   createdAt?: Date | string
 }
 
@@ -506,7 +680,13 @@ export type UserUpdateWithoutApplicationsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseResume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tokenUsage?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  nextQuotaReset?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -517,7 +697,13 @@ export type UserUncheckedUpdateWithoutApplicationsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseResume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tokenUsage?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
+  tokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
+  scrapeLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  nextQuotaReset?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -559,7 +745,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   password?: boolean
   baseResume?: boolean
   homeLocation?: boolean
-  tokenUsage?: boolean
+  tokenUsageTotal?: boolean
+  tokenUsageWindow?: boolean
+  tokenLimit?: boolean
+  scrapeUsageTotal?: boolean
+  scrapeUsageWindow?: boolean
+  scrapeLimit?: boolean
+  nextQuotaReset?: boolean
   createdAt?: boolean
   applications?: boolean | Prisma.User$applicationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -572,7 +764,13 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   baseResume?: boolean
   homeLocation?: boolean
-  tokenUsage?: boolean
+  tokenUsageTotal?: boolean
+  tokenUsageWindow?: boolean
+  tokenLimit?: boolean
+  scrapeUsageTotal?: boolean
+  scrapeUsageWindow?: boolean
+  scrapeLimit?: boolean
+  nextQuotaReset?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -583,7 +781,13 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   baseResume?: boolean
   homeLocation?: boolean
-  tokenUsage?: boolean
+  tokenUsageTotal?: boolean
+  tokenUsageWindow?: boolean
+  tokenLimit?: boolean
+  scrapeUsageTotal?: boolean
+  scrapeUsageWindow?: boolean
+  scrapeLimit?: boolean
+  nextQuotaReset?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -594,11 +798,17 @@ export type UserSelectScalar = {
   password?: boolean
   baseResume?: boolean
   homeLocation?: boolean
-  tokenUsage?: boolean
+  tokenUsageTotal?: boolean
+  tokenUsageWindow?: boolean
+  tokenLimit?: boolean
+  scrapeUsageTotal?: boolean
+  scrapeUsageWindow?: boolean
+  scrapeLimit?: boolean
+  nextQuotaReset?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "baseResume" | "homeLocation" | "tokenUsage" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "baseResume" | "homeLocation" | "tokenUsageTotal" | "tokenUsageWindow" | "tokenLimit" | "scrapeUsageTotal" | "scrapeUsageWindow" | "scrapeLimit" | "nextQuotaReset" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   applications?: boolean | Prisma.User$applicationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -618,7 +828,13 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     password: string | null
     baseResume: string | null
     homeLocation: string | null
-    tokenUsage: number
+    tokenUsageTotal: number
+    tokenUsageWindow: number
+    tokenLimit: number
+    scrapeUsageTotal: number
+    scrapeUsageWindow: number
+    scrapeLimit: number
+    nextQuotaReset: Date
     createdAt: Date
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -1050,7 +1266,13 @@ export interface UserFieldRefs {
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly baseResume: Prisma.FieldRef<"User", 'String'>
   readonly homeLocation: Prisma.FieldRef<"User", 'String'>
-  readonly tokenUsage: Prisma.FieldRef<"User", 'Int'>
+  readonly tokenUsageTotal: Prisma.FieldRef<"User", 'Int'>
+  readonly tokenUsageWindow: Prisma.FieldRef<"User", 'Int'>
+  readonly tokenLimit: Prisma.FieldRef<"User", 'Int'>
+  readonly scrapeUsageTotal: Prisma.FieldRef<"User", 'Int'>
+  readonly scrapeUsageWindow: Prisma.FieldRef<"User", 'Int'>
+  readonly scrapeLimit: Prisma.FieldRef<"User", 'Int'>
+  readonly nextQuotaReset: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
