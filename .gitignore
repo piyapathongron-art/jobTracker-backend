@@ -3,7 +3,6 @@ node_modules
 .env.local
 .env.staging
 
-prisma/migrations
 
 dist
 generated
