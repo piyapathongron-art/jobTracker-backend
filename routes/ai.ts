@@ -83,22 +83,25 @@ const scrapeUrlSchema = z.object({
   ),
 });
 
+// Must return values that exactly match SOURCE_OPTIONS in
+// client/components/add-application-dialog.tsx
 function detectSourceFromUrl(url: string): string {
   try {
-    const hostname = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
+    const hostname = new URL(url).hostname
+      .toLowerCase()
+      .replace(/^www\./, "")
+      .replace(/\.(com|org|net|io|co|app)(\.[a-z]{2,3})?$/, "");
+
     if (hostname.includes("linkedin")) return "LinkedIn";
     if (hostname.includes("jobsdb")) return "JobsDB";
     if (hostname.includes("indeed")) return "Indeed";
     if (hostname.includes("glassdoor")) return "Glassdoor";
     if (hostname.includes("workday") || hostname.includes("myworkdayjobs")) return "Workday";
     if (hostname.includes("greenhouse")) return "Greenhouse";
-    if (hostname.includes("lever.co")) return "Lever";
-    if (hostname.includes("ashbyhq")) return "Ashby";
-    if (hostname.includes("naukri")) return "Naukri";
-    if (hostname.includes("monster")) return "Monster";
-    if (hostname.includes("ziprecruiter")) return "ZipRecruiter";
-    if (hostname.includes("wellfound") || hostname.includes("angel.co")) return "Wellfound";
-    if (hostname.includes("seek.")) return "Seek";
+    if (hostname.includes("lever")) return "Lever";
+    if (hostname.includes("ashbyhq") || hostname.includes("ashby")) return "Ashby";
+    if (hostname.includes("wellfound") || hostname.includes("angel")) return "Wellfound";
+    if (hostname.includes("seek")) return "Seek";
     return "Company Site";
   } catch {
     return "Other";
@@ -391,19 +394,37 @@ router.post("/scrape-url", async (req: Request, res: Response) => {
   const quota = await assertQuota(userId);
   if (!quota.ok) return res.status(quota.status).json(quota.body);
 
-  try {
-    const jinaUrl = `https://r.jina.ai/${parsed.data.url}`;
-    const jinaResp = await fetch(jinaUrl, {
-      headers: { Accept: "text/plain" },
+  const firecrawlKey = process.env.FIRECRAWL_API_KEY;
+  if (!firecrawlKey) {
+    return res.status(500).json({
+      error: "Scraper not configured. Add FIRECRAWL_API_KEY to your server .env.local.",
     });
-    console.log(jinaResp)
-    if (!jinaResp.ok) {
+  }
+
+  try {
+    const fcResp = await fetch("https://api.firecrawl.dev/v1/scrape", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${firecrawlKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        url: parsed.data.url,
+        formats: ["markdown"],
+      }),
+    });
+
+    if (!fcResp.ok) {
+      const errBody = await fcResp.text().catch(() => "");
+      console.error("Firecrawl error:", fcResp.status, errBody);
       return res.status(502).json({
         error: "Could not fetch the job posting. The site may be blocking scrapers — try pasting the JD manually.",
       });
     }
 
-    const markdown = (await jinaResp.text()).trim();
+    const fcJson = (await fcResp.json()) as { success?: boolean; data?: { markdown?: string }; error?: string };
+    const markdown = (fcJson.data?.markdown ?? "").trim();
+
     if (!markdown || markdown.length < 50) {
       return res.status(422).json({
         error: "Page content was empty or too short. Try pasting the JD manually.",
