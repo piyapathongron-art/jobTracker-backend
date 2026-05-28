@@ -100,6 +100,7 @@ export const JobApplicationScalarFieldEnum = {
   workMode: 'workMode',
   jobDescription: 'jobDescription',
   notes: 'notes',
+  source: 'source',
   appliedAt: 'appliedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

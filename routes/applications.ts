@@ -21,6 +21,7 @@ const createSchema = z.object({
   workMode: z.enum(["ONSITE", "HYBRID", "REMOTE"]).optional(),
   jobDescription: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
+  source: z.string().optional().nullable(),
   appliedAt: z.string().datetime().optional().nullable(),
 });
 
@@ -64,6 +65,7 @@ router.post("/", async (req: Request, res: Response) => {
       ...(d.workMode && { workMode: d.workMode }),
       ...(d.jobDescription && { jobDescription: d.jobDescription }),
       ...(d.notes && { notes: d.notes }),
+      ...(d.source && { source: d.source }),
       ...(effectiveAppliedAt && { appliedAt: effectiveAppliedAt }),
     },
   });
@@ -84,6 +86,7 @@ const patchSchema = z.object({
   workMode: z.enum(["ONSITE", "HYBRID", "REMOTE"]).optional(),
   jobDescription: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
+  source: z.string().optional().nullable(),
   appliedAt: z.string().datetime().optional().nullable(),
 });
 

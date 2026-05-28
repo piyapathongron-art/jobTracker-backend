@@ -76,6 +76,35 @@ const compareSchema = z.object({
   jobIds: z.array(z.string()).min(2, "Select at least 2 jobs to compare").max(3, "Maximum 3 jobs can be compared at once"),
 });
 
+const scrapeUrlSchema = z.object({
+  url: z.string().trim().min(1, "URL is required").refine(
+    (v) => /^https?:\/\/.+/i.test(v),
+    { message: "Must be a valid URL starting with http(s)://" }
+  ),
+});
+
+function detectSourceFromUrl(url: string): string {
+  try {
+    const hostname = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
+    if (hostname.includes("linkedin")) return "LinkedIn";
+    if (hostname.includes("jobsdb")) return "JobsDB";
+    if (hostname.includes("indeed")) return "Indeed";
+    if (hostname.includes("glassdoor")) return "Glassdoor";
+    if (hostname.includes("workday") || hostname.includes("myworkdayjobs")) return "Workday";
+    if (hostname.includes("greenhouse")) return "Greenhouse";
+    if (hostname.includes("lever.co")) return "Lever";
+    if (hostname.includes("ashbyhq")) return "Ashby";
+    if (hostname.includes("naukri")) return "Naukri";
+    if (hostname.includes("monster")) return "Monster";
+    if (hostname.includes("ziprecruiter")) return "ZipRecruiter";
+    if (hostname.includes("wellfound") || hostname.includes("angel.co")) return "Wellfound";
+    if (hostname.includes("seek.")) return "Seek";
+    return "Company Site";
+  } catch {
+    return "Other";
+  }
+}
+
 router.post("/parse-jd", async (req: Request, res: Response) => {
   const parsed = parseSchema.safeParse(req.body);
   if (!parsed.success) {
@@ -349,6 +378,57 @@ Previous AI Evaluation: ${JSON.stringify(parsed.data.scoreData)}
   } catch (error) {
     console.error("AI Resume Optimizer Error:", error);
     return res.status(500).json({ error: "AI failed to optimize the resume. Please try again." });
+  }
+});
+
+router.post("/scrape-url", async (req: Request, res: Response) => {
+  const parsed = scrapeUrlSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0]?.message ?? "Invalid URL" });
+  }
+
+  const userId = (req as any).user.userId;
+  const quota = await assertQuota(userId);
+  if (!quota.ok) return res.status(quota.status).json(quota.body);
+
+  try {
+    const jinaUrl = `https://r.jina.ai/${parsed.data.url}`;
+    const jinaResp = await fetch(jinaUrl, {
+      headers: { Accept: "text/plain" },
+    });
+    console.log(jinaResp)
+    if (!jinaResp.ok) {
+      return res.status(502).json({
+        error: "Could not fetch the job posting. The site may be blocking scrapers — try pasting the JD manually.",
+      });
+    }
+
+    const markdown = (await jinaResp.text()).trim();
+    if (!markdown || markdown.length < 50) {
+      return res.status(422).json({
+        error: "Page content was empty or too short. Try pasting the JD manually.",
+      });
+    }
+
+    const result = await geminiFlash.generateContent(JD_PARSER_PROMPT + markdown.slice(0, 30_000));
+    incrementUsage(userId, result.response.usageMetadata?.totalTokenCount);
+    const responseText = result.response.text().trim();
+
+    let jsonStr = responseText;
+    if (jsonStr.startsWith("```")) {
+      jsonStr = jsonStr.replace(/^```json\n?/, "").replace(/\n?```$/, "");
+    }
+
+    const data = JSON.parse(jsonStr);
+    data.url = parsed.data.url;
+    data.source = detectSourceFromUrl(parsed.data.url);
+
+    return res.json(data);
+  } catch (error) {
+    console.error("AI Scrape URL Error:", error);
+    return res.status(500).json({
+      error: "Failed to scrape the URL. Please try pasting the JD manually.",
+    });
   }
 });
 
