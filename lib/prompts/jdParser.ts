@@ -1,6 +1,7 @@
 export const JD_PARSER_PROMPT = `You are an expert recruiter and job description parser. Extract structured information from the job description provided below.
 
 Fields to extract (use null if not found):
+- isJobDescription: boolean (true if the text/image is actually a job posting, false otherwise)
 - company: string (hiring company name)
 - role: string (exact job title)
 - location: string | null (city, state, or "Remote")
@@ -18,6 +19,7 @@ Rules:
 3. No explanation or extra text.
 4. CRITICAL SALARY RULE: ALWAYS convert the salary to MONTHLY. If the provided salary is yearly/annual, you MUST divide it by 12. If it is hourly, multiply it by 160. Do NOT return annual figures.
 5. If only one salary value is given, set it to salaryMax.
+6. If the provided content is NOT a job description (e.g. a random meme, a news article, irrelevant photo), set isJobDescription to false and leave all other fields null.
 
 Job Description:
 `;

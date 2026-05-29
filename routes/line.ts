@@ -3,6 +3,8 @@ import { middleware as lineMiddleware, messagingApi, webhook } from "@line/bot-s
 import { prisma } from "../lib/prisma.js";
 import { geminiFlash } from "../lib/gemini.js";
 import { JD_PARSER_PROMPT } from "../lib/prompts/jdParser.js";
+import { CAREER_ADVISOR_PROMPT } from "../lib/prompts/lineBot.js";
+import { LINE_REPLIES } from "../lib/prompts/lineReplies.js";
 import {
   assertTokenQuota,
   assertScrapeQuota,
@@ -78,6 +80,11 @@ async function handleEvent(
 
   const text = (messageEvent.message as webhook.TextMessageContent).text.trim();
 
+  if (text.toLowerCase() === "/help" || text.toLowerCase() === "help") {
+    await reply(client, replyToken, LINE_REPLIES.HELP_MESSAGE);
+    return;
+  }
+
   if (/^\d{6}$/.test(text)) {
     await handleLinkCode(text, lineUserId, replyToken, client);
     return;
@@ -100,11 +107,7 @@ async function handleLinkCode(
 ) {
   const user = await prisma.user.findFirst({ where: { lineLinkCode: code } });
   if (!user) {
-    await reply(
-      client,
-      replyToken,
-      "Hmm, that 6-digit code doesn't match any account. Generate a fresh code from your dashboard and try again.",
-    );
+    await reply(client, replyToken, LINE_REPLIES.LINK_CODE_INVALID);
     return;
   }
 
@@ -113,11 +116,7 @@ async function handleLinkCode(
     data: { lineUserId, lineLinkCode: null },
   });
 
-  await reply(
-    client,
-    replyToken,
-    `Account linked successfully! Hi ${user.name} — send me a job posting URL (or a screenshot of the JD) and I'll save it to your dashboard.`,
-  );
+  await reply(client, replyToken, LINE_REPLIES.LINK_SUCCESS(user.name));
 }
 
 async function handleJobUrl(
@@ -128,11 +127,7 @@ async function handleJobUrl(
 ) {
   const user = await prisma.user.findUnique({ where: { lineUserId } });
   if (!user) {
-    await reply(
-      client,
-      replyToken,
-      "Link your JobTracker account first: generate a 6-digit code in the dashboard and send it here.",
-    );
+    await reply(client, replyToken, LINE_REPLIES.NOT_LINKED);
     return;
   }
 
@@ -149,7 +144,7 @@ async function handleJobUrl(
 
   const firecrawlKey = process.env.FIRECRAWL_API_KEY;
   if (!firecrawlKey) {
-    await reply(client, replyToken, "Sorry — the scraper isn't configured on the server.");
+    await reply(client, replyToken, LINE_REPLIES.NO_SCRAPER);
     return;
   }
 
@@ -164,14 +159,14 @@ async function handleJobUrl(
     });
 
     if (!fcResp.ok) {
-      await reply(client, replyToken, "I couldn't fetch that page — the site may block scrapers.");
+      await reply(client, replyToken, LINE_REPLIES.SCRAPE_BLOCKED);
       return;
     }
 
     const fcJson = (await fcResp.json()) as { data?: { markdown?: string } };
     const markdown = (fcJson.data?.markdown ?? "").trim();
     if (markdown.length < 50) {
-      await reply(client, replyToken, "That page didn't have enough content to parse.");
+      await reply(client, replyToken, LINE_REPLIES.SCRAPE_NO_CONTENT);
       return;
     }
 
@@ -187,6 +182,11 @@ async function handleJobUrl(
       jsonStr = jsonStr.replace(/^```json\n?/, "").replace(/\n?```$/, "");
     }
     const parsed = JSON.parse(jsonStr);
+
+    if (parsed.isJobDescription === false) {
+      await reply(client, replyToken, LINE_REPLIES.NOT_A_JOB);
+      return;
+    }
 
     await prisma.jobApplication.create({
       data: {
@@ -211,18 +211,16 @@ async function handleJobUrl(
     const newScrapes = scrapeCheck.user.scrapeUsageWindow + 1;
     const resetsAt = tokenCheck.user.nextQuotaReset.toISOString().slice(0, 10);
 
+    const tokensInfo = `[Tokens: ${newTokens.toLocaleString()}/${tokenCheck.user.tokenLimit.toLocaleString()} | Scrapes: ${newScrapes}/${scrapeCheck.user.scrapeLimit} | Resets: ${resetsAt}]`;
+
     await reply(
       client,
       replyToken,
-      `Job saved to your dashboard!\n${parsed.role ?? "Role"} @ ${parsed.company ?? "Company"}\n\n[Tokens: ${newTokens.toLocaleString()}/${tokenCheck.user.tokenLimit.toLocaleString()} | Scrapes: ${newScrapes}/${scrapeCheck.user.scrapeLimit} | Resets: ${resetsAt}]`,
+      LINE_REPLIES.JOB_SAVED_URL(parsed.role ?? "Role", parsed.company ?? "Company", tokensInfo)
     );
   } catch (err) {
     console.error("[LINE] job url handler failed:", err);
-    await reply(
-      client,
-      replyToken,
-      "Something went wrong saving that job. Try pasting the JD manually in the web app.",
-    );
+    await reply(client, replyToken, LINE_REPLIES.JOB_SAVED_URL_ERROR);
   }
 }
 
@@ -235,11 +233,7 @@ async function handleJobImage(
 ) {
   const user = await prisma.user.findUnique({ where: { lineUserId } });
   if (!user) {
-    await reply(
-      client,
-      replyToken,
-      "Link your JobTracker account first: generate a 6-digit code in the dashboard and send it here.",
-    );
+    await reply(client, replyToken, LINE_REPLIES.NOT_LINKED);
     return;
   }
 
@@ -269,6 +263,11 @@ async function handleJobImage(
     }
     const parsed = JSON.parse(jsonStr);
 
+    if (parsed.isJobDescription === false) {
+      await reply(client, replyToken, LINE_REPLIES.NOT_A_JOB);
+      return;
+    }
+
     await prisma.jobApplication.create({
       data: {
         userId: user.id,
@@ -291,22 +290,18 @@ async function handleJobImage(
     const newTokens = tokenCheck.user.tokenUsageWindow + (result.response.usageMetadata?.totalTokenCount || 0);
     const resetsAt = tokenCheck.user.nextQuotaReset.toISOString().slice(0, 10);
 
+    const tokensInfo = `[Tokens: ${newTokens.toLocaleString()}/${tokenCheck.user.tokenLimit.toLocaleString()} | Resets: ${resetsAt}]`;
+
     await reply(
       client,
       replyToken,
-      `Job saved from screenshot!\n${parsed.role ?? "Role"} @ ${parsed.company ?? "Company"}\n\n[Tokens: ${newTokens.toLocaleString()}/${tokenCheck.user.tokenLimit.toLocaleString()} | Resets: ${resetsAt}]`,
+      LINE_REPLIES.JOB_SAVED_IMAGE(parsed.role ?? "Role", parsed.company ?? "Company", tokensInfo)
     );
   } catch (err) {
     console.error("[LINE] job image handler failed:", err);
-    await reply(
-      client,
-      replyToken,
-      "I couldn't read that screenshot. Try a clearer image or paste the JD text directly.",
-    );
+    await reply(client, replyToken, LINE_REPLIES.JOB_SAVED_IMAGE_ERROR);
   }
 }
-
-const CAREER_ADVISOR_PROMPT = `You are a friendly, concise career advisor for job seekers. Reply in the same language as the user's message. Keep responses under 4 short paragraphs, practical, and encouraging. No markdown formatting.`;
 
 async function handleCareerChat(
   text: string,
@@ -316,11 +311,7 @@ async function handleCareerChat(
 ) {
   const user = await prisma.user.findUnique({ where: { lineUserId } });
   if (!user) {
-    await reply(
-      client,
-      replyToken,
-      "Link your JobTracker account first: generate a 6-digit code in the dashboard and send it here.",
-    );
+    await reply(client, replyToken, LINE_REPLIES.NOT_LINKED);
     return;
   }
 
@@ -358,14 +349,67 @@ async function handleCareerChat(
     const newTokens = tokenCheck.user.tokenUsageWindow + (result.response.usageMetadata?.totalTokenCount || 0);
     const resetsAt = tokenCheck.user.nextQuotaReset.toISOString().slice(0, 10);
 
-    const advice =
-      result.response.text().trim() ||
-      "I'm not sure how to help with that yet. Try asking about resumes, interviews, or job search strategy.";
-    
-    await reply(client, replyToken, `${advice.slice(0, 4800)}\n\n[Tokens: ${newTokens.toLocaleString()}/${tokenCheck.user.tokenLimit.toLocaleString()} | Resets: ${resetsAt}]`);
+    const rawText = result.response.text().trim();
+    let jsonStr = rawText;
+    if (jsonStr.startsWith("```")) {
+      jsonStr = jsonStr.replace(/^```json\n?/, "").replace(/\n?```$/, "");
+    }
+
+    let replyText = rawText;
+    let jobToSave: {
+      company?: string;
+      role?: string;
+      salaryMin?: number | null;
+      salaryMax?: number | null;
+      notes?: string | null;
+    } | null = null;
+
+    try {
+      const parsed = JSON.parse(jsonStr);
+      if (typeof parsed.replyText === "string" && parsed.replyText.trim().length > 0) {
+        replyText = parsed.replyText;
+      }
+      if (parsed.jobToSave && typeof parsed.jobToSave === "object") {
+        jobToSave = parsed.jobToSave;
+      }
+    } catch {
+      // Fallback: use raw text as replyText.
+    }
+
+    if (jobToSave && jobToSave.company && jobToSave.role) {
+      await prisma.jobApplication.create({
+        data: {
+          userId: user.id,
+          company: jobToSave.company,
+          role: jobToSave.role,
+          status: "WISHLIST",
+          url: null,
+          salaryMin: jobToSave.salaryMin ?? null,
+          salaryMax: jobToSave.salaryMax ?? null,
+          salaryCurrency: "THB",
+          salaryPeriod: "MONTHLY",
+          location: null,
+          workMode: "ONSITE",
+          jobDescription: null,
+          notes: jobToSave.notes ?? null,
+          source: "Manual Text",
+        },
+      });
+      replyText += LINE_REPLIES.JOB_SAVED_TEXT;
+    }
+
+    if (!replyText.trim()) {
+      replyText = LINE_REPLIES.CHAT_FALLBACK;
+    }
+
+    await reply(
+      client,
+      replyToken,
+      `${replyText.slice(0, 4800)}\n\n[Tokens: ${newTokens.toLocaleString()}/${tokenCheck.user.tokenLimit.toLocaleString()} | Resets: ${resetsAt}]`,
+    );
   } catch (err) {
     console.error("[LINE] career chat failed:", err);
-    await reply(client, replyToken, "Sorry — I couldn't generate a response right now.");
+    await reply(client, replyToken, LINE_REPLIES.CHAT_ERROR);
   }
 }
 
