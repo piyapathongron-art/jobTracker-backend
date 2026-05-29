@@ -23,6 +23,7 @@ const createSchema = z.object({
   notes: z.string().optional().nullable(),
   source: z.string().optional().nullable(),
   appliedAt: z.string().datetime().optional().nullable(),
+  interviewDate: z.string().datetime().optional().nullable(),
 });
 
 router.get("/", async (req: Request, res: Response) => {
@@ -67,6 +68,7 @@ router.post("/", async (req: Request, res: Response) => {
       ...(d.notes && { notes: d.notes }),
       ...(d.source && { source: d.source }),
       ...(effectiveAppliedAt && { appliedAt: effectiveAppliedAt }),
+      ...(d.interviewDate && { interviewDate: new Date(d.interviewDate) }),
     },
   });
 
@@ -88,6 +90,7 @@ const patchSchema = z.object({
   notes: z.string().optional().nullable(),
   source: z.string().optional().nullable(),
   appliedAt: z.string().datetime().optional().nullable(),
+  interviewDate: z.string().datetime().optional().nullable(),
 });
 
 router.patch("/:id", async (req: Request, res: Response) => {
@@ -106,6 +109,9 @@ router.patch("/:id", async (req: Request, res: Response) => {
       ...data,
       ...(data.appliedAt !== undefined && {
         appliedAt: data.appliedAt ? new Date(data.appliedAt) : null,
+      }),
+      ...(data.interviewDate !== undefined && {
+        interviewDate: data.interviewDate ? new Date(data.interviewDate) : null,
       }),
     },
   });

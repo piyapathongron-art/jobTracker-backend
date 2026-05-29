@@ -599,6 +599,8 @@ export const UserScalarFieldEnum = {
   password: 'password',
   baseResume: 'baseResume',
   homeLocation: 'homeLocation',
+  lineUserId: 'lineUserId',
+  lineLinkCode: 'lineLinkCode',
   tokenUsageTotal: 'tokenUsageTotal',
   tokenUsageWindow: 'tokenUsageWindow',
   tokenLimit: 'tokenLimit',
@@ -629,6 +631,7 @@ export const JobApplicationScalarFieldEnum = {
   notes: 'notes',
   source: 'source',
   appliedAt: 'appliedAt',
+  interviewDate: 'interviewDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

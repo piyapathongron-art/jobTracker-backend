@@ -17,6 +17,8 @@ const QUOTA_SELECT = {
   email: true,
   baseResume: true,
   homeLocation: true,
+  lineUserId: true,
+  lineLinkCode: true,
   tokenUsageTotal: true,
   tokenUsageWindow: true,
   tokenLimit: true,
@@ -116,6 +118,37 @@ router.post("/profile/upload-pdf", upload.single("resume"), async (req: Request,
   } catch (error) {
     console.error("PDF Parsing Error:", error);
     return res.status(500).json({ error: "AI failed to extract text from your PDF. Please try again or paste manually." });
+  }
+});
+
+router.post("/line-code", async (req: Request, res: Response) => {
+  const userId = (req as any).user.userId;
+
+  try {
+    const code = String(Math.floor(100_000 + Math.random() * 900_000));
+    await prisma.user.update({
+      where: { id: userId },
+      data: { lineLinkCode: code },
+    });
+    return res.json({ code });
+  } catch (error) {
+    console.error("LINE Link Code Error:", error);
+    return res.status(500).json({ error: "Failed to generate link code." });
+  }
+});
+
+router.delete("/line-link", async (req: Request, res: Response) => {
+  const userId = (req as any).user.userId;
+
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { lineUserId: null, lineLinkCode: null },
+    });
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error("LINE Unlink Error:", error);
+    return res.status(500).json({ error: "Failed to unlink LINE account." });
   }
 });
 

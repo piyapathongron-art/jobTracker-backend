@@ -51,6 +51,8 @@ export type UserMinAggregateOutputType = {
   password: string | null
   baseResume: string | null
   homeLocation: string | null
+  lineUserId: string | null
+  lineLinkCode: string | null
   tokenUsageTotal: number | null
   tokenUsageWindow: number | null
   tokenLimit: number | null
@@ -68,6 +70,8 @@ export type UserMaxAggregateOutputType = {
   password: string | null
   baseResume: string | null
   homeLocation: string | null
+  lineUserId: string | null
+  lineLinkCode: string | null
   tokenUsageTotal: number | null
   tokenUsageWindow: number | null
   tokenLimit: number | null
@@ -85,6 +89,8 @@ export type UserCountAggregateOutputType = {
   password: number
   baseResume: number
   homeLocation: number
+  lineUserId: number
+  lineLinkCode: number
   tokenUsageTotal: number
   tokenUsageWindow: number
   tokenLimit: number
@@ -122,6 +128,8 @@ export type UserMinAggregateInputType = {
   password?: true
   baseResume?: true
   homeLocation?: true
+  lineUserId?: true
+  lineLinkCode?: true
   tokenUsageTotal?: true
   tokenUsageWindow?: true
   tokenLimit?: true
@@ -139,6 +147,8 @@ export type UserMaxAggregateInputType = {
   password?: true
   baseResume?: true
   homeLocation?: true
+  lineUserId?: true
+  lineLinkCode?: true
   tokenUsageTotal?: true
   tokenUsageWindow?: true
   tokenLimit?: true
@@ -156,6 +166,8 @@ export type UserCountAggregateInputType = {
   password?: true
   baseResume?: true
   homeLocation?: true
+  lineUserId?: true
+  lineLinkCode?: true
   tokenUsageTotal?: true
   tokenUsageWindow?: true
   tokenLimit?: true
@@ -260,6 +272,8 @@ export type UserGroupByOutputType = {
   password: string | null
   baseResume: string | null
   homeLocation: string | null
+  lineUserId: string | null
+  lineLinkCode: string | null
   tokenUsageTotal: number
   tokenUsageWindow: number
   tokenLimit: number
@@ -300,6 +314,8 @@ export type UserWhereInput = {
   password?: Prisma.StringNullableFilter<"User"> | string | null
   baseResume?: Prisma.StringNullableFilter<"User"> | string | null
   homeLocation?: Prisma.StringNullableFilter<"User"> | string | null
+  lineUserId?: Prisma.StringNullableFilter<"User"> | string | null
+  lineLinkCode?: Prisma.StringNullableFilter<"User"> | string | null
   tokenUsageTotal?: Prisma.IntFilter<"User"> | number
   tokenUsageWindow?: Prisma.IntFilter<"User"> | number
   tokenLimit?: Prisma.IntFilter<"User"> | number
@@ -318,6 +334,8 @@ export type UserOrderByWithRelationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   baseResume?: Prisma.SortOrderInput | Prisma.SortOrder
   homeLocation?: Prisma.SortOrderInput | Prisma.SortOrder
+  lineUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  lineLinkCode?: Prisma.SortOrderInput | Prisma.SortOrder
   tokenUsageTotal?: Prisma.SortOrder
   tokenUsageWindow?: Prisma.SortOrder
   tokenLimit?: Prisma.SortOrder
@@ -332,6 +350,7 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  lineUserId?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
@@ -339,6 +358,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringNullableFilter<"User"> | string | null
   baseResume?: Prisma.StringNullableFilter<"User"> | string | null
   homeLocation?: Prisma.StringNullableFilter<"User"> | string | null
+  lineLinkCode?: Prisma.StringNullableFilter<"User"> | string | null
   tokenUsageTotal?: Prisma.IntFilter<"User"> | number
   tokenUsageWindow?: Prisma.IntFilter<"User"> | number
   tokenLimit?: Prisma.IntFilter<"User"> | number
@@ -348,7 +368,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   nextQuotaReset?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   applications?: Prisma.JobApplicationListRelationFilter
-}, "id" | "email">
+}, "id" | "email" | "lineUserId">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -357,6 +377,8 @@ export type UserOrderByWithAggregationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   baseResume?: Prisma.SortOrderInput | Prisma.SortOrder
   homeLocation?: Prisma.SortOrderInput | Prisma.SortOrder
+  lineUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  lineLinkCode?: Prisma.SortOrderInput | Prisma.SortOrder
   tokenUsageTotal?: Prisma.SortOrder
   tokenUsageWindow?: Prisma.SortOrder
   tokenLimit?: Prisma.SortOrder
@@ -382,6 +404,8 @@ export type UserScalarWhereWithAggregatesInput = {
   password?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   baseResume?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   homeLocation?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  lineUserId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  lineLinkCode?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   tokenUsageTotal?: Prisma.IntWithAggregatesFilter<"User"> | number
   tokenUsageWindow?: Prisma.IntWithAggregatesFilter<"User"> | number
   tokenLimit?: Prisma.IntWithAggregatesFilter<"User"> | number
@@ -399,6 +423,8 @@ export type UserCreateInput = {
   password?: string | null
   baseResume?: string | null
   homeLocation?: string | null
+  lineUserId?: string | null
+  lineLinkCode?: string | null
   tokenUsageTotal?: number
   tokenUsageWindow?: number
   tokenLimit?: number
@@ -417,6 +443,8 @@ export type UserUncheckedCreateInput = {
   password?: string | null
   baseResume?: string | null
   homeLocation?: string | null
+  lineUserId?: string | null
+  lineLinkCode?: string | null
   tokenUsageTotal?: number
   tokenUsageWindow?: number
   tokenLimit?: number
@@ -435,6 +463,8 @@ export type UserUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseResume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lineUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lineLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
   tokenUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
   tokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
@@ -453,6 +483,8 @@ export type UserUncheckedUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseResume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lineUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lineLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
   tokenUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
   tokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
@@ -471,6 +503,8 @@ export type UserCreateManyInput = {
   password?: string | null
   baseResume?: string | null
   homeLocation?: string | null
+  lineUserId?: string | null
+  lineLinkCode?: string | null
   tokenUsageTotal?: number
   tokenUsageWindow?: number
   tokenLimit?: number
@@ -488,6 +522,8 @@ export type UserUpdateManyMutationInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseResume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lineUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lineLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
   tokenUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
   tokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
@@ -505,6 +541,8 @@ export type UserUncheckedUpdateManyInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseResume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lineUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lineLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
   tokenUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
   tokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
@@ -522,6 +560,8 @@ export type UserCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   baseResume?: Prisma.SortOrder
   homeLocation?: Prisma.SortOrder
+  lineUserId?: Prisma.SortOrder
+  lineLinkCode?: Prisma.SortOrder
   tokenUsageTotal?: Prisma.SortOrder
   tokenUsageWindow?: Prisma.SortOrder
   tokenLimit?: Prisma.SortOrder
@@ -548,6 +588,8 @@ export type UserMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   baseResume?: Prisma.SortOrder
   homeLocation?: Prisma.SortOrder
+  lineUserId?: Prisma.SortOrder
+  lineLinkCode?: Prisma.SortOrder
   tokenUsageTotal?: Prisma.SortOrder
   tokenUsageWindow?: Prisma.SortOrder
   tokenLimit?: Prisma.SortOrder
@@ -565,6 +607,8 @@ export type UserMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   baseResume?: Prisma.SortOrder
   homeLocation?: Prisma.SortOrder
+  lineUserId?: Prisma.SortOrder
+  lineLinkCode?: Prisma.SortOrder
   tokenUsageTotal?: Prisma.SortOrder
   tokenUsageWindow?: Prisma.SortOrder
   tokenLimit?: Prisma.SortOrder
@@ -630,6 +674,8 @@ export type UserCreateWithoutApplicationsInput = {
   password?: string | null
   baseResume?: string | null
   homeLocation?: string | null
+  lineUserId?: string | null
+  lineLinkCode?: string | null
   tokenUsageTotal?: number
   tokenUsageWindow?: number
   tokenLimit?: number
@@ -647,6 +693,8 @@ export type UserUncheckedCreateWithoutApplicationsInput = {
   password?: string | null
   baseResume?: string | null
   homeLocation?: string | null
+  lineUserId?: string | null
+  lineLinkCode?: string | null
   tokenUsageTotal?: number
   tokenUsageWindow?: number
   tokenLimit?: number
@@ -680,6 +728,8 @@ export type UserUpdateWithoutApplicationsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseResume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lineUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lineLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
   tokenUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
   tokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
@@ -697,6 +747,8 @@ export type UserUncheckedUpdateWithoutApplicationsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseResume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lineUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lineLinkCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenUsageTotal?: Prisma.IntFieldUpdateOperationsInput | number
   tokenUsageWindow?: Prisma.IntFieldUpdateOperationsInput | number
   tokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
@@ -745,6 +797,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   password?: boolean
   baseResume?: boolean
   homeLocation?: boolean
+  lineUserId?: boolean
+  lineLinkCode?: boolean
   tokenUsageTotal?: boolean
   tokenUsageWindow?: boolean
   tokenLimit?: boolean
@@ -764,6 +818,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   baseResume?: boolean
   homeLocation?: boolean
+  lineUserId?: boolean
+  lineLinkCode?: boolean
   tokenUsageTotal?: boolean
   tokenUsageWindow?: boolean
   tokenLimit?: boolean
@@ -781,6 +837,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   baseResume?: boolean
   homeLocation?: boolean
+  lineUserId?: boolean
+  lineLinkCode?: boolean
   tokenUsageTotal?: boolean
   tokenUsageWindow?: boolean
   tokenLimit?: boolean
@@ -798,6 +856,8 @@ export type UserSelectScalar = {
   password?: boolean
   baseResume?: boolean
   homeLocation?: boolean
+  lineUserId?: boolean
+  lineLinkCode?: boolean
   tokenUsageTotal?: boolean
   tokenUsageWindow?: boolean
   tokenLimit?: boolean
@@ -808,7 +868,7 @@ export type UserSelectScalar = {
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "baseResume" | "homeLocation" | "tokenUsageTotal" | "tokenUsageWindow" | "tokenLimit" | "scrapeUsageTotal" | "scrapeUsageWindow" | "scrapeLimit" | "nextQuotaReset" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "baseResume" | "homeLocation" | "lineUserId" | "lineLinkCode" | "tokenUsageTotal" | "tokenUsageWindow" | "tokenLimit" | "scrapeUsageTotal" | "scrapeUsageWindow" | "scrapeLimit" | "nextQuotaReset" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   applications?: boolean | Prisma.User$applicationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -828,6 +888,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     password: string | null
     baseResume: string | null
     homeLocation: string | null
+    lineUserId: string | null
+    lineLinkCode: string | null
     tokenUsageTotal: number
     tokenUsageWindow: number
     tokenLimit: number
@@ -1266,6 +1328,8 @@ export interface UserFieldRefs {
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly baseResume: Prisma.FieldRef<"User", 'String'>
   readonly homeLocation: Prisma.FieldRef<"User", 'String'>
+  readonly lineUserId: Prisma.FieldRef<"User", 'String'>
+  readonly lineLinkCode: Prisma.FieldRef<"User", 'String'>
   readonly tokenUsageTotal: Prisma.FieldRef<"User", 'Int'>
   readonly tokenUsageWindow: Prisma.FieldRef<"User", 'Int'>
   readonly tokenLimit: Prisma.FieldRef<"User", 'Int'>
